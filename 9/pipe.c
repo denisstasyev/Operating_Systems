@@ -2,19 +2,34 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 int main()
 {
    int     fd[2];
-   ssize_t size;
-   char     string[] = "Hello, world!";
-   char  resstring[14];
+//   ssize_t size, size_w, size_r;
 
-   if(pipe(fd) < 0){
-     printf("Can\'t open pipe\n");
-     exit(-1);
+//   if(pipe(fd) < 0){
+//     printf("Can\'t open pipe\n");
+//     exit(-1);
+//   }
+
+   fcntl(fd[1], F_SETFL, O_NONBLOCK);
+
+   int sum = 0;
+   while (1)
+   {
+
+     if (write(fd[1], "", 1) == -1)
+     {
+       printf(sum);
+       return 0;
+     }
+     
+     sum++;
    }
 
+   /*
    size = write(fd[1], string, 14);
 
    if(size != 14){
@@ -30,6 +45,7 @@ int main()
    }
 
    printf("%s\n", resstring);
+   */
 
    if(close(fd[0]) < 0){
       printf("Can'\t close reading side of pipe\n"); exit(-1);
@@ -40,3 +56,4 @@ int main()
 
    return 0;
 }
+
